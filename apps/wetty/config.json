@@ -1,0 +1,24 @@
+{
+  "$schema": "../schema.json",
+  "name": "Wetty",
+  "available": true,
+  "exposable": true,
+  "port": 8096,
+  "id": "filebrowser",
+  "tipi_version": 3,
+  "version": "5.7.2",
+  "categories": ["utilities"],
+  "description": "Reliable and Performant File Management Desktop Sync and File Sharing\n Default credentials: admin / admin",
+  "short_desc": "Access your homeserver files from your browser",
+  "author": "butlerx",
+  "website": "https://butlerx.github.io/wetty/#/",
+  "source": "https://github.com/butlerx/wetty",
+  "form_fields": [
+    {
+      "type": "text",
+      "label": "SSH host (default docker host)",
+      "required": false,
+      "env_variable": "SSH_HOST"
+    }
+  ]
+}

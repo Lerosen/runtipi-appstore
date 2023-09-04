@@ -1,0 +1,38 @@
+version: "3.7"
+services:
+  wetty:
+    container_name: wetty
+    image: wettyoss/wetty
+    ports:
+      - ${APP_PORT}:3000
+    command:
+      - --ssh-host=${SSH_HOST:-host.docker.internal}
+    networks:
+      - tipi_main_network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    labels:
+      # Main
+      traefik.enable: true
+      traefik.http.middlewares.wetty-web-redirect.redirectscheme.scheme: https
+      traefik.http.services.wetty.loadbalancer.server.port: 3000
+      # Web
+      traefik.http.routers.wetty-insecure.rule: Host(`${APP_DOMAIN}`)
+      traefik.http.routers.wetty-insecure.entrypoints: web
+      traefik.http.routers.wetty-insecure.service: wetty
+      traefik.http.routers.wetty-insecure.middlewares: wetty-web-redirect
+      # Websecure
+      traefik.http.routers.wetty.rule: Host(`${APP_DOMAIN}`)
+      traefik.http.routers.wetty.entrypoints: websecure
+      traefik.http.routers.wetty.service: wetty
+      traefik.http.routers.wetty.tls.certresolver: myresolver
+      # Local domain
+      traefik.http.routers.wetty-local-insecure.rule: Host(`wetty.${LOCAL_DOMAIN}`)
+      traefik.http.routers.wetty-local-insecure.entrypoints: web
+      traefik.http.routers.wetty-local-insecure.service: wetty
+      traefik.http.routers.wetty-local-insecure.middlewares: wetty-web-redirect
+      # Local domain secure
+      traefik.http.routers.wetty-local.rule: Host(`wetty.${LOCAL_DOMAIN}`)
+      traefik.http.routers.wetty-local.entrypoints: websecure
+      traefik.http.routers.wetty-local.service: wetty
+      traefik.http.routers.wetty-local.tls: true
